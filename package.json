@@ -1,0 +1,49 @@
+{
+  "name": "cv-pull-request",
+  "version": "1.0.0",
+  "description": "Utility for auto-generating CV pull requests",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "prebuild": "rimraf dist",
+    "build": "npx pkg@4.3.8 . --out-path dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfuroyama/CV-Pull-Request-Generator.git"
+  },
+  "bin": "src/*.js",
+  "pkg": {
+    "scripts": "src/index.js",
+    "targets": [
+      "node10-macos-x64",
+      "node10-linux-x64",
+      "node10-win-x64"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mfuroyama/CV-Pull-Request-Generator/issues"
+  },
+  "homepage": "https://github.com/mfuroyama/CV-Pull-Request-Generator#readme",
+  "dependencies": {
+    "@octokit/rest": "^16.43.1",
+    "chalk": "^2.4.2",
+    "date-fns": "^2.10.0",
+    "figures": "^3.2.0",
+    "fs-extra": "^8.1.0",
+    "js-yaml": "^3.13.1",
+    "listr": "^0.14.3",
+    "meow": "^6.0.1",
+    "prompts": "^2.1.0",
+    "terminal-link": "^2.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3",
+    "rimraf": "^3.0.2"
+  }
+}
