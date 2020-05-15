@@ -12,9 +12,9 @@
     "type": "git",
     "url": "git+https://github.com/mfuroyama/CV-Pull-Request-Generator.git"
   },
-  "bin": "src/*.js",
+  "bin": "src/index.js",
   "pkg": {
-    "scripts": "src/index.js",
+    "scripts": "src/*.js",
     "targets": [
       "node10-macos-x64",
       "node10-linux-x64",
