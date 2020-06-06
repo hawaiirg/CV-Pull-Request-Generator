@@ -113,7 +113,6 @@ const writeOptionFile = (options = {}) => {
         fs.writeFileSync(flags.configFile, yaml.safeDump(targetOptions));
     } catch (err) {
         const errorString = chalk.red(err.toString());
-        console.log(chalk.yellow(`Couldn't save file ${fileString}, using default values...`));
         console.log(`Couldn't save file ${chalk.yellow(flags.configFile)} ${errorString}`);
     }
 };
