@@ -40,9 +40,9 @@ const cli = meow(`
         --help, -h         Show this message
 `, { flags: FLAGS });
 
-const { flags } = cli;
-const { assignees } = flags;
-flags.assignees = (typeof assignees === 'string') ? assignees.split(',') : assignees;
+const { flags: props } = cli;
+const { assignees } = props;
+props.assignees = (typeof assignees === 'string') ? assignees.split(',') : assignees;
 
 const DEFAULT_PROJECT_CONFIG = [{
     name: 'JLV - CCP',
@@ -96,10 +96,10 @@ const DEFAULT_CONFIG = {
 };
 
 const readOptionFile = () => {
-    const fileString = chalk.white.bold(flags.configFile);
+    const fileString = chalk.white.bold(props.configFile);
     console.log(`Reading config file ${fileString}...`);
     try {
-        const options = yaml.safeLoad(fs.readFileSync(flags.configFile));
+        const options = yaml.safeLoad(fs.readFileSync(props.configFile));
         return options;
     } catch (err) {
         console.log(chalk.yellow(`Couldn't load file ${fileString}, using default values...`));
@@ -108,14 +108,14 @@ const readOptionFile = () => {
 };
 
 const writeOptionFile = (options = {}) => {
-    const fileString = chalk.white.bold(flags.configFile);
+    const fileString = chalk.white.bold(props.configFile);
     const { date, debug, ...targetOptions } = options;
     console.log(`Writing config file ${fileString}...`);
     try {
-        fs.writeFileSync(flags.configFile, yaml.safeDump(targetOptions));
+        fs.writeFileSync(props.configFile, yaml.safeDump(targetOptions));
     } catch (err) {
         const errorString = chalk.red(err.toString());
-        console.log(`Couldn't save file ${chalk.yellow(flags.configFile)} ${errorString}`);
+        console.log(`Couldn't save file ${chalk.yellow(props.configFile)} ${errorString}`);
     }
 };
 
@@ -130,10 +130,10 @@ const onCancel = () => {
 // ======================================================== API ========================================================
 const getConfig = async () => {
     const options = getOptions();
-    Object.assign(options, { automatic: flags.automatic });
+    Object.assign(options, { automatic: props.automatic });
 
-    if (flags.automatic) {
-        Object.assign(options, flags);
+    if (props.automatic) {
+        Object.assign(options, props);
         const missingFields = REQUIRED_FIELDS.filter(fieldName => !options[fieldName]);
         if (missingFields.length > 0) {
             const missingFieldsStr = chalk.red(missingFields.join(', '));
@@ -164,13 +164,13 @@ const getConfig = async () => {
         validate: value => (value ? true : 'Please enter a GitHub API token'),
     }];
 
-    prompts.override(flags);
+    prompts.override(props);
     const config = await prompts(questions, { onCancel });
     return Object.assign(options, config);
 };
 
 const saveConfig = (config) => {
-    if (flags.saveConfig) {
+    if (props.saveConfig) {
         writeOptionFile(config);
     }
 };
