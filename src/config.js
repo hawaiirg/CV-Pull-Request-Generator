@@ -7,12 +7,14 @@ const meow = require('meow');
 const yaml = require('js-yaml');
 const { format } = require('date-fns');
 
+const DEFAULT_CONFIG_FILE = './cv-pull-request.yaml';
+
 const FLAGS = {
     version: { type: 'string', alias: 'v', required: true },
     assignees: { type: 'string', alias: 'a', required: true },
     token: { type: 'string', alias: 't', required: true },
     automatic: { type: 'boolean', alias: 'y', default: false },
-    configFile: { type: 'string', alias: 'c', default: './cv-pull-request.yaml' },
+    configFile: { type: 'string', alias: 'c', default: DEFAULT_CONFIG_FILE },
     saveConfig: { type: 'boolean', alias: 's', default: true },
     debug: { type: 'boolean', alias: 'd', default: false },
     help: { type: 'boolean', alias: 'h', default: false },
@@ -32,7 +34,7 @@ const cli = meow(`
         --token, -t        [REQUIRED] GitHub API token
         --automatic, -y    [OPTIONAL] Automatic mode; disable interactive prompts. This mode will raise errors if all
                                       required fields are not present
-        --configFile, -c   [OPTIONAL] YAML configuration file (default: './cv-pull-request.yaml')
+        --configFile, -c   [OPTIONAL] YAML configuration file (default: '${DEFAULT_CONFIG_FILE}')
         --saveConfig, -s   [OPTIONAL] Save the configuration values to the specified config file (default: true)
         --debug, -d        [OPTIONAL] Run in debug mode if present (default: false)
         --help, -h         Show this message
