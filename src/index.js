@@ -5,6 +5,7 @@ const Listr = require('listr');
 const chalk = require('chalk');
 const prompts = require('prompts');
 const figures = require('figures');
+const format = require('string-format');
 const terminalLink = require('terminal-link');
 const { getConfig, saveConfig, version: appVersion } = require('./config');
 
@@ -13,10 +14,10 @@ const getRequests = async (config) => {
     const requests = projects
         .map(project => ({ ...project, ...rest }))
         .map((project) => {
-            const { version, head, base } = project;
+            const { head, base } = project;
             return Object.assign(project, {
-                head: head.replace(/{version}/g, version),
-                base: base.replace(/{version}/g, version),
+                head: format(head, project),
+                base: format(base, project),
             });
         });
 
