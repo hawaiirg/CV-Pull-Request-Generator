@@ -66,43 +66,43 @@ props.assignees = (typeof assignees === 'string') ? assignees.split(',') : assig
 const DEFAULT_PROJECT_CONFIG = [{
     name: 'JLV - CCP',
     repo: 'JLV',
-    head: 'cvccp_{source}_{version}',
-    base: 'cvccp_{target}_{version}',
+    head: 'cvccp_{source}',
+    base: 'cvccp_{target}',
 }, {
     name: 'JLV - VAS',
     repo: 'JLV',
-    head: 'cvvas_{source}_{version}',
-    base: 'cvvas_{target}_{version}',
+    head: 'cvvas_{source}',
+    base: 'cvvas_{target}',
 }, {
     name: 'JMeadows - CCP',
     repo: 'jMeadows',
-    head: 'cvccp_{source}_{version}',
-    base: 'cvccp_{target}_{version}',
+    head: 'cvccp_{source}',
+    base: 'cvccp_{target}',
 }, {
     name: 'JMeadows - VAS',
     repo: 'jMeadows',
-    head: 'cvvas_{source}_{version}',
-    base: 'cvvas_{target}_{version}',
+    head: 'cvvas_{source}',
+    base: 'cvvas_{target}',
 }, {
     name: 'HuiCore',
     repo: 'HuiCore',
-    head: 'cv_{source}_{version}',
-    base: 'cv_{target}_{version}',
+    head: 'cv_{source}',
+    base: 'cv_{target}',
 }, {
     name: 'VistA Data Service',
     repo: 'VistaDataService',
-    head: 'cv_{source}_{version}',
-    base: 'cv_{target}_{version}',
+    head: 'cv_{source}',
+    base: 'cv_{target}',
 }, {
     name: 'JLV QoS',
     repo: 'jlvqos',
-    head: 'cv_{source}_{version}',
-    base: 'cv_{target}_{version}',
+    head: 'cv_{source}',
+    base: 'cv_{target}',
 }, {
     name: 'Report Builder',
     repo: 'ReportBuilder',
-    head: 'cv_{source}_{version}',
-    base: 'cv_{target}_{version}',
+    head: 'cv_{source}',
+    base: 'cv_{target}',
 }];
 
 const DEFAULT_CONFIG = {

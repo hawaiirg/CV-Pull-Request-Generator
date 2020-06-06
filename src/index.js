@@ -9,6 +9,11 @@ const format = require('string-format');
 const terminalLink = require('terminal-link');
 const { getConfig, saveConfig, version: appVersion } = require('./config');
 
+const formatBranchName = (branch, project) => {
+    const initialName = format(branch, project);
+    return (initialName.includes('prod') ? initialName : `${initialName}_${project.version}`);
+};
+
 const getRequests = async (config) => {
     const { projects, ...rest } = config;
     const requests = projects
@@ -16,8 +21,8 @@ const getRequests = async (config) => {
         .map((project) => {
             const { head, base } = project;
             return Object.assign(project, {
-                head: format(head, project),
-                base: format(base, project),
+                head: formatBranchName(head, project),
+                base: formatBranchName(base, project),
             });
         });
 
