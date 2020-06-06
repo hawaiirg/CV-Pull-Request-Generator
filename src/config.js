@@ -9,10 +9,28 @@ const { format } = require('date-fns');
 
 const DEFAULT_CONFIG_FILE = './cv-pull-request.yaml';
 
+const DEPLOY_TYPE_VALUES = {
+    test: {
+        source: 'dev',
+        target: 'test',
+    },
+    prod: {
+        source: 'test',
+        target: 'prod',
+    }
+};
+const DEPLOY_TYPE_DEFAULT = 'test';
+
+const DEPLOY_TYPE_CHOICES = [
+    { title: 'Test', description: 'Test deployment (dev -> test)', value: 'test' },
+    { title: 'Production', description: 'Production deployment (test -> prod)', value: 'prod' },
+];
+
 const FLAGS = {
     version: { type: 'string', alias: 'v', required: true },
     assignees: { type: 'string', alias: 'a', required: true },
     token: { type: 'string', alias: 't', required: true },
+    deployType: { type: 'string', alias: 'b', required: true },
     automatic: { type: 'boolean', alias: 'y', default: false },
     configFile: { type: 'string', alias: 'c', default: DEFAULT_CONFIG_FILE },
     saveConfig: { type: 'boolean', alias: 's', default: true },
@@ -32,6 +50,7 @@ const cli = meow(`
         --version, -v      [REQUIRED] CV release version
         --assignees, -a    [REQUIRED] Assignees (comma-separated list)
         --token, -t        [REQUIRED] GitHub API token
+        --deployType, -b   [REQUIRED] Type of deploy being done, can be either "test" or "prod"
         --automatic, -y    [OPTIONAL] Automatic mode; disable interactive prompts. This mode will raise errors if all
                                       required fields are not present
         --configFile, -c   [OPTIONAL] YAML configuration file (default: '${DEFAULT_CONFIG_FILE}')
@@ -47,43 +66,43 @@ props.assignees = (typeof assignees === 'string') ? assignees.split(',') : assig
 const DEFAULT_PROJECT_CONFIG = [{
     name: 'JLV - CCP',
     repo: 'JLV',
-    head: 'cvccp_dev_{version}',
-    base: 'cvccp_test_{version}',
+    head: 'cvccp_{source}_{version}',
+    base: 'cvccp_{target}_{version}',
 }, {
     name: 'JLV - VAS',
     repo: 'JLV',
-    head: 'cvvas_dev_{version}',
-    base: 'cvvas_test_{version}',
+    head: 'cvvas_{source}_{version}',
+    base: 'cvvas_{target}_{version}',
 }, {
     name: 'JMeadows - CCP',
     repo: 'jMeadows',
-    head: 'cvccp_dev_{version}',
-    base: 'cvccp_test_{version}',
+    head: 'cvccp_{source}_{version}',
+    base: 'cvccp_{target}_{version}',
 }, {
     name: 'JMeadows - VAS',
     repo: 'jMeadows',
-    head: 'cvvas_dev_{version}',
-    base: 'cvvas_test_{version}',
+    head: 'cvvas_{source}_{version}',
+    base: 'cvvas_{target}_{version}',
 }, {
     name: 'HuiCore',
     repo: 'HuiCore',
-    head: 'cv_dev_{version}',
-    base: 'cv_test_{version}',
+    head: 'cv_{source}_{version}',
+    base: 'cv_{target}_{version}',
 }, {
     name: 'VistA Data Service',
     repo: 'VistaDataService',
-    head: 'cv_dev_{version}',
-    base: 'cv_test_{version}',
+    head: 'cv_{source}_{version}',
+    base: 'cv_{target}_{version}',
 }, {
     name: 'JLV QoS',
     repo: 'jlvqos',
-    head: 'cv_dev_{version}',
-    base: 'cv_test_{version}',
+    head: 'cv_{source}_{version}',
+    base: 'cv_{target}_{version}',
 }, {
     name: 'Report Builder',
     repo: 'ReportBuilder',
-    head: 'cv_dev_{version}',
-    base: 'cv_test_{version}',
+    head: 'cv_{source}_{version}',
+    base: 'cv_{target}_{version}',
 }];
 
 const DEFAULT_CONFIG = {
@@ -123,6 +142,23 @@ const getOptions = () => Object.assign({
     date: format(new Date(), 'MM-dd-yyyy'),
 }, DEFAULT_CONFIG, readOptionFile());
 
+
+const getDeployTypeIndex = (deployType) => {
+    if (!deployType) {
+        return 0;
+    }
+
+    const choiceIndex = DEPLOY_TYPE_CHOICES.findIndex((choice) => choice.value === deployType);
+    return (choiceIndex >= 0 ? choiceIndex : 0);
+}
+
+const setDeployTypeOptions = (config) => {
+    const { deployType: type = DEPLOY_TYPE_DEFAULT } = config;
+    const deployTypeValues = DEPLOY_TYPE_VALUES[type] || DEPLOY_TYPE_VALUES[DEPLOY_TYPE_DEFAULT];
+
+    return Object.assign(config, deployTypeValues);
+}
+
 const onCancel = () => {
     process.exit(0);
 };
@@ -151,6 +187,12 @@ const getConfig = async () => {
         message: 'What CV version are you building?',
         validate: value => (value ? true : 'Please enter a version'),
     }, {
+        type: 'select',
+        name: 'deployType',
+        initial: getDeployTypeIndex(options.deployType),
+        message: 'What kind of deployment are you doing?',
+        choices: DEPLOY_TYPE_CHOICES,
+    }, {
         type: 'list',
         name: 'assignees',
         initial: Array.isArray(options.assignees) ? options.assignees.join(',') : '',
@@ -166,7 +208,7 @@ const getConfig = async () => {
 
     prompts.override(props);
     const config = await prompts(questions, { onCancel });
-    return Object.assign(options, config);
+    return Object.assign(options, setDeployTypeOptions(config));
 };
 
 const saveConfig = (config) => {
