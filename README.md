@@ -34,3 +34,8 @@ Note: If the 'REQUIRED' options are not supplied, the application will ask for t
     --debug, -d        [OPTIONAL] Run in debug mode if present (default: false)
     --help, -h         Show this message
 ```
+
+### OS X Security Issue
+If you get a security warning, 
+
+Open "Security and Privacy" in OS X System Preferences, select "Allow Untrusted App" then "Run". You only need to do this once.
